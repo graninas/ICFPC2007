@@ -1,0 +1,22 @@
+module Middleware.Config.Scheme where
+
+import Middleware.Config.Config
+
+-- TODO: move into Assets.
+
+defaultSection = sect "DEFAULT"
+appName  = defaultSection <| opt "applicationName"
+rootPath = defaultSection <| opt "rootPath"
+logPath  = defaultSection <| opt "logPath"
+dataPath = defaultSection <| opt "dataPath"
+rawsPath = defaultSection <| opt "rawsPath"
+
+videoSection  = sect "VIDEO"
+screenWidth   = videoSection <| opt "screenWidth"
+screenHeight  = videoSection <| opt "screenHeight"
+colorDepth    = videoSection <| opt "colorDepth"
+virtualPlaneX = videoSection <| opt "virtualPlaneX"
+virtualPlaneY = videoSection <| opt "virtualPlaneY"
+
+endoSection = sect "ENDO"
+endoDna = endoSection <| opt "endoDna"
