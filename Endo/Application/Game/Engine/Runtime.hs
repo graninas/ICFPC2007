@@ -24,6 +24,9 @@ putEndo endo = do
     rt <- get
     put $ rt { grtEndo = endo }
     
+getPattern :: GameStateTIO Pattern
+getPattern = liftM (endoPattern . grtEndo) get
+    
 getView :: GameStateTIO View
 getView = liftM grtView get
 

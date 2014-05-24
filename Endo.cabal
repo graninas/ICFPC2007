@@ -52,7 +52,6 @@ executable Endo
                    Middleware.Tracing.Log,
                    View.Color,
                    View.Config,
-                   View.Language,
                    View.Runtime,
                    Middleware.SDL.Render,
                    Test.EndoDnaTest,
@@ -61,6 +60,8 @@ executable Endo
                    IcfpcEndo.Endo,
                    IcfpcEndo.View,
                    IcfpcEndo.Wire,
-                   Endo
+                   Endo,
+                   IcfpcEndo.Execution,
+                   IcfpcEndo.Constants
   main-is:         Main.hs
 
