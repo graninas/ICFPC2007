@@ -1,7 +1,7 @@
 {-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE FlexibleInstances #-}
 
-module IcfpcEndo.Wire where
+module IcfpcEndo.Wire (logic) where
 
 import Application.Game.Engine.Runtime
 import Application.Game.Engine.GameWire
@@ -36,17 +36,14 @@ gameNode node = modes Execute (selector node) .
                 pure () &&& now . interpreter node . pollSdlEvent
             )
 
--- TODO: move to entry module.
 selector _    Finish = quit . diagnose "Finish"
 selector node Execute = mkEmpty . execute --> gameNode node
 
--- TODO: move to entry module.
 interpreter :: GameNode -> GameWire SDL.Event Command
 interpreter node = mkSF_ $ \e -> case e of
     SDL.Quit -> Finish
     _ -> Execute
 
--- TODO: move to entry module.
 next Screen4 = Screen1
 next node = succ node
 

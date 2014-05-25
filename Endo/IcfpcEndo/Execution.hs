@@ -4,10 +4,6 @@ import IcfpcEndo.Endo
 import IcfpcEndo.Constants
 import IcfpcEndo.RuntimeSt
 
---import Application.Game.Engine.Core
---import Application.Game.Engine.Runtime
---import Application.Game.Engine.GameWire
-
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.Sequence as S
 import Control.Monad (when, unless, liftM)
@@ -27,7 +23,7 @@ executeDna = do
 -- It is possible to use Parsec for 'executing' a DNA.
 pattern :: RuntimeSt m => m Pattern
 pattern = do
-    endo@(Endo dna (DnaFrom i) pat lvl) <- getData -- getEndo
+    endo@(Endo dna (DnaFrom i) pat lvl) <- getData
     case BS.drop i dna of
       dna' | checkPrefix cPrefix  dna' -> shiftDna 1 >> patAppend iBasePI >> pattern
       dna' | checkPrefix fPrefix  dna' -> shiftDna 1 >> patAppend cBasePI >> pattern
@@ -61,12 +57,12 @@ matchReplace = undefined
 shiftDna n = do
     endo@(Endo _ (DnaFrom i) _ _) <- getData -- getEndo
     let endo' = endo { endoDnaIndex = DnaFrom (i + n) }
-    putData endo' --putEndo endo'
+    putData endo'
 
 patAppend patItem = do
     endo@(Endo _ _ pat _) <- getData -- getEndo
     let endo' = endo { endoPattern = appendPatternItem patItem pat }
-    putData endo' --putEndo endo'
+    putData endo'
 
 nat = undefined
 consts = undefined
