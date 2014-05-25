@@ -63,6 +63,7 @@ executable Endo
                    Endo,
                    IcfpcEndo.Execution,
                    IcfpcEndo.Constants,
-                   IcfpcEndo.RuntimeSt
+                   IcfpcEndo.RuntimeSt,
+                   Application.Game.GameState
   main-is:           Main.hs
 

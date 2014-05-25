@@ -1,7 +1,7 @@
 module Application.Game.Engine.Runtime where
 
+import Application.Game.GameState
 import View.Runtime
-import IcfpcEndo.Endo
 import Middleware.Config.Facade
 
 import Control.Monad.State (get, put, StateT(..))
@@ -10,28 +10,27 @@ import Control.Monad (liftM)
 
 data GameRt = GameRt { grtConfiguration :: Configuration
                      , grtView :: View
-                     , grtEndo :: Endo
+                     , grtData :: GameState
                      }
 
 type GameStateTIO = StateT GameRt IO
 
 runtime = GameRt
 
-getEndo :: GameStateTIO Endo
-getEndo = liftM grtEndo get
+getConfiguration :: GameStateTIO Configuration
+getConfiguration = liftM grtConfiguration get
 
-putEndo :: Endo -> GameStateTIO ()
-putEndo endo = do
-    rt <- get
-    put $ rt { grtEndo = endo }
-    
-getPattern :: GameStateTIO Pattern
-getPattern = liftM (endoPattern . grtEndo) get
-    
+putConfiguration :: Configuration -> GameStateTIO ()
+putConfiguration cfg = modify (\rt -> rt { grtConfiguration = cfg })
+
 getView :: GameStateTIO View
 getView = liftM grtView get
 
 putView :: View -> GameStateTIO ()
-putView view = do
-    rt <- get
-    put $ rt { grtView = view }
+putView view = modify (\rt -> rt { grtView = view })
+
+getData :: GameStateTIO GameState
+getData = liftM grtData get
+
+putData :: GameState -> GameStateTIO ()
+putData dat = modify (\rt -> rt { grtData = dat })

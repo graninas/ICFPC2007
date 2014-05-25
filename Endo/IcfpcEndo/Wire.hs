@@ -3,7 +3,7 @@
 
 module IcfpcEndo.Wire (logic) where
 
-import Application.Game.Engine.Runtime
+import Application.Game.Engine.Runtime as Rt
 import Application.Game.Engine.GameWire
 import Application.Game.Engine.Core
 
@@ -17,8 +17,8 @@ import Control.Monad (liftM)
 import Control.Monad.State (get, put)
 
 instance RuntimeSt GameStateTIO where
-  getData = getEndo
-  putData = putEndo
+  getData = Rt.getData
+  putData = Rt.putData
 
 data GameNode = Screen1 | Screen2 | Screen3 | Screen4
   deriving (Ord, Eq, Show, Enum)

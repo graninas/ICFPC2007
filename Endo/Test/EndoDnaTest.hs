@@ -15,6 +15,7 @@ import qualified Data.ByteString.Char8 as BS
 import qualified Data.Sequence as S
 
 import IcfpcEndo.Endo
+import IcfpcEndo.RuntimeSt
 import IcfpcEndo.Execution
 import IcfpcEndo.Constants
 
