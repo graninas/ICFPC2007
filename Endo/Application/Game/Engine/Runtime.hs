@@ -5,6 +5,7 @@ import IcfpcEndo.Endo
 import Middleware.Config.Facade
 
 import Control.Monad.State (get, put, StateT(..))
+import Control.Monad.State.Class
 import Control.Monad (liftM)
 
 data GameRt = GameRt { grtConfiguration :: Configuration

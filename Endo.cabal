@@ -62,6 +62,7 @@ executable Endo
                    IcfpcEndo.Wire,
                    Endo,
                    IcfpcEndo.Execution,
-                   IcfpcEndo.Constants
+                   IcfpcEndo.Constants,
+                   IcfpcEndo.RuntimeSt
   main-is:         Main.hs
 

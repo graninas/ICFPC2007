@@ -4,10 +4,14 @@ import IcfpcEndo.Endo
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.Sequence as Seq
 
-iBase = Base 'I'
-cBase = Base 'C'
-fBase = Base 'F'
-pBase = Base 'P'
+iBasePI = Base 'I'
+cBasePI = Base 'C'
+fBasePI = Base 'F'
+pBasePI = Base 'P'
+skipPI = Skip
+searchPI = Search
+openPI = Open
+closePI = Close
 
 cPrefix   = BS.pack "C"
 fPrefix   = BS.pack "F"

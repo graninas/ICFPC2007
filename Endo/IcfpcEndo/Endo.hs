@@ -12,7 +12,8 @@ data PatternItem = Base Char
                  | Search Dna
                  | Open
                  | Close
-                 
+  deriving (Show, Read, Eq)
+
 type Pattern = S.Seq PatternItem
 
 
@@ -23,11 +24,6 @@ data Endo = Endo { endoDna :: Dna
                  }
 
 emptyPattern = S.empty
-skipPatternItem = Skip
-searchPatternItem = Search
-openPatternItem = Open
-closePatternItem = Close
-
 mkEndo dna n = Endo dna (DnaFrom n) emptyPattern 0
 
 toDna :: String -> Dna
@@ -50,9 +46,10 @@ dna |- (DnaFrom i)     = BS.drop i dna
 dna |- (DnaFromTo i k) = BS.take (k - i) . BS.drop i $ dna
 
 checkPrefix = BS.isPrefixOf
-
 appendPatternItem = (S.<|)
 
+toPattern :: [PatternItem] -> Pattern
+toPattern = S.fromList
 
 
 
