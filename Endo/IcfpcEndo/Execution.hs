@@ -6,61 +6,67 @@ import IcfpcEndo.RuntimeSt
 
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.Sequence as S
+import qualified Data.IORef as IO
 import Control.Monad (when, unless, liftM)
+import Control.Monad.IO.Class (MonadIO, liftIO)
 
-getPattern :: RuntimeSt m => m Pattern
+getPattern :: MonadIO m => RuntimeSt m => m Pattern
 getPattern = liftM endoPattern getData
 
 -- Preparing
 
-executeDna :: RuntimeSt m => m ()
+executeDna :: MonadIO m => RuntimeSt m => m ()
 executeDna = do
-    p <- pattern
---    t <- template
---    matchReplace (p, t)
-    return ()
+    endo@(Endo _ _ _ _ act) <- getData
+    case act of
+        NoDecoding    -> startDecodingAction ParsePattern
+        ParsePattern  -> parsePattern
+        ParseTemplate -> parseTemplate
+        MatchReplace  -> matchReplace
+
+startDecodingAction act = do
+    endo <- getData
+    putData $ endo { endoDecodingAction = act }
 
 -- It is possible to use Parsec for 'executing' a DNA.
-pattern :: RuntimeSt m => m Pattern
-pattern = do
-    endo@(Endo dna (DnaFrom i) pat lvl) <- getData
+parsePattern :: MonadIO m => RuntimeSt m => m ()
+parsePattern = do
+    endo@(Endo dnaRef (DnaFrom i) pat lvl act) <- getData
+    dna <- liftIO $ IO.readIORef dnaRef
     case BS.drop i dna of
-      dna' | checkPrefix cPrefix  dna' -> shiftDna 1 >> patAppend iBasePI >> pattern
-      dna' | checkPrefix fPrefix  dna' -> shiftDna 1 >> patAppend cBasePI >> pattern
-      dna' | checkPrefix pPrefix  dna' -> shiftDna 1 >> patAppend fBasePI >> pattern
-      dna' | checkPrefix icPrefix dna' -> shiftDna 2 >> patAppend pBasePI >> pattern
+      dna' | checkPrefix cPrefix  dna' -> shiftDna 1 >> patAppend iBasePI
+      dna' | checkPrefix fPrefix  dna' -> shiftDna 1 >> patAppend cBasePI
+      dna' | checkPrefix pPrefix  dna' -> shiftDna 1 >> patAppend fBasePI
+      dna' | checkPrefix icPrefix dna' -> shiftDna 2 >> patAppend pBasePI
       dna' | checkPrefix ipPrefix dna' -> do
           shiftDna 2
           n <- nat
           patAppend $ skipPI n
-          pattern
       dna' | checkPrefix ifPrefix dna' -> do
           shiftDna 3
           s <- consts
           patAppend $ searchPI s
-          pattern
       dna' | checkPrefix iipPrefix dna' -> do
           shiftDna 3
           increaseLevel
           patAppend openPI
-          pattern
       dna' |    checkPrefix iicPrefix dna'
              || checkPrefix iifPrefix dna' -> do
           shiftDna 3
-          if lvl == 0 then getPattern
-                      else decreaseLevel >> patAppend closePI >> pattern
-      _ -> getPattern
+          if lvl == 0 then startDecodingAction ParseTemplate
+                      else decreaseLevel >> patAppend closePI
+      _ -> startDecodingAction ParseTemplate
     
-template = undefined
+parseTemplate = undefined
 matchReplace = undefined
 
 shiftDna n = do
-    endo@(Endo _ (DnaFrom i) _ _) <- getData -- getEndo
+    endo@(Endo _ (DnaFrom i) _ _ _) <- getData
     let endo' = endo { endoDnaIndex = DnaFrom (i + n) }
     putData endo'
 
 patAppend patItem = do
-    endo@(Endo _ _ pat _) <- getData -- getEndo
+    endo@(Endo _ _ pat _ _) <- getData
     let endo' = endo { endoPattern = appendPatternItem patItem pat }
     putData endo'
 

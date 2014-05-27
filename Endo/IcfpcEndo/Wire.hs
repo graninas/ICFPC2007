@@ -39,11 +39,12 @@ gameNode node = modes NoAction (selector node) .
 
 selector _    Finish = quit . diagnose "Finish"
 selector node Execute = mkEmpty . execute . diagnose "Executing" --> gameNode node
-selector node NoAction = mkEmpty . diagnose "No action" --> gameNode node
+selector node NoAction = mkEmpty --> gameNode node
 
 interpreter :: GameNode -> GameWire SDL.Event Command
 interpreter node = mkSF_ $ \e -> case e of
     SDL.Quit -> Finish
+    SDL.MouseButtonDown _ _ SDL.ButtonLeft -> Execute
     SDL.KeyDown _ -> Execute
     _ -> NoAction
 

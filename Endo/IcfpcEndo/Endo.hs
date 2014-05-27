@@ -2,6 +2,7 @@ module IcfpcEndo.Endo where
 
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.Sequence as S
+import qualified Data.IORef as IO
 
 type Dna = BS.ByteString
 data DnaIndex = DnaFrom Int
@@ -16,15 +17,20 @@ data PatternItem = Base Char
 
 type Pattern = S.Seq PatternItem
 
-
-data Endo = Endo { endoDna :: Dna
+data Endo = Endo { endoDna :: IO.IORef Dna
                  , endoDnaIndex :: DnaIndex
                  , endoPattern :: Pattern
                  , endoLevel :: Int
+                 , endoDecodingAction :: DecodingAction
                  }
 
+data DecodingAction = NoDecoding
+                    | ParsePattern
+                    | ParseTemplate
+                    | MatchReplace
+
 emptyPattern = S.empty
-mkEndo dna n = Endo dna (DnaFrom n) emptyPattern 0
+mkEndo dna n = Endo dna (DnaFrom n) emptyPattern 0 NoDecoding
 
 toDna :: String -> Dna
 toDna = BS.pack

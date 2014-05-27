@@ -6,6 +6,7 @@ import Middleware.Config.Facade
 
 import Paths_Endo as P
 import Data.ByteString.Char8 as X
+import qualified Data.IORef as IO
 
 endoDnaInfo = strOption endoDna
 
@@ -13,4 +14,5 @@ load cfg = do
     dnaFile <- extract cfg endoDnaInfo
     dnaRealFileName <- P.getDataFileName dnaFile
     dna <- X.readFile dnaRealFileName
-    return $ mkEndo dna 0
+    dnaRef <- IO.newIORef dna
+    return $ mkEndo dnaRef 0
