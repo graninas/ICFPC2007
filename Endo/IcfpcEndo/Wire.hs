@@ -25,24 +25,27 @@ data GameNode = Screen1 | Screen2 | Screen3 | Screen4
 
 data Command = Finish
              | Execute
+             | NoAction
   deriving (Ord, Eq, Show)
 
 logic :: GameWire () ()
 logic = gameNode Screen1
 
 gameNode :: GameNode -> GameWire () ()
-gameNode node = modes Execute (selector node) .
+gameNode node = modes NoAction (selector node) .
             (
                 pure () &&& now . interpreter node . pollSdlEvent
             )
 
 selector _    Finish = quit . diagnose "Finish"
-selector node Execute = mkEmpty . execute --> gameNode node
+selector node Execute = mkEmpty . execute . diagnose "Executing" --> gameNode node
+selector node NoAction = mkEmpty . diagnose "No action" --> gameNode node
 
 interpreter :: GameNode -> GameWire SDL.Event Command
 interpreter node = mkSF_ $ \e -> case e of
     SDL.Quit -> Finish
-    _ -> Execute
+    SDL.KeyDown _ -> Execute
+    _ -> NoAction
 
 next Screen4 = Screen1
 next node = succ node

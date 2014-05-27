@@ -9,17 +9,16 @@ import Middleware.SDL.Environment
 
 import Application.Game.Engine.Runtime
 import Application.Game.Engine.Core
+import Application.Config
 
 import qualified IcfpcEndo.Facade as Endo
-
-logFileLoader = Cfg.filePathLoader Cfg.logPath "Endo.log"
 
 boot cfg = do
     logFilePath <- Cfg.extract cfg logFileLoader
     Log.setupLogger logFilePath
     Log.info $ "Logger started: " ++ logFilePath
     
-    endo <- Endo.loadEndo cfg :: IO Endo.Endo
+    dat <- Endo.load cfg
     Log.info "Endo loaded."
     
     viewSettings <- loadViewSettings cfg
@@ -28,7 +27,7 @@ boot cfg = do
     withEnvironment $ do
         view <- setupView viewSettings
         Log.info "View prepared."
-        let rt = runtime cfg view endo
+        let rt = runtime cfg view dat
         (inhibitor, _) <- startMainLoop Endo.logic rt
         Log.info $ "Inhibitor: " ++ if null inhibitor then "Unspecified." else inhibitor
     

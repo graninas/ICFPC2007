@@ -9,6 +9,10 @@ license:        GPL-3
 category:       Research
 maintainer:     Alexander Granin <graninas@gmail.com>
 stability:      experimental
+data-files:     
+                Assets/Data/Endo/endo.dna, 
+                Assets/Data/Options.cfg, 
+                Assets/Logs/Amoeba.log
 
 executable Endo
   build-depends:     
@@ -41,7 +45,6 @@ executable Endo
                    Middleware.Config.Config,
                    Middleware.Config.Extra,
                    Middleware.Config.Facade,
-                   Middleware.Config.Scheme,
                    Middleware.FRP.NetwireFacade,
                    Middleware.Parsing.Common,
                    Middleware.Parsing.Facade,
@@ -64,6 +67,8 @@ executable Endo
                    IcfpcEndo.Execution,
                    IcfpcEndo.Constants,
                    IcfpcEndo.RuntimeSt,
-                   Application.Game.GameState
+                   Application.Game.GameState,
+                   Application.Config,
+                   Application.Assets.ConfigScheme
   main-is:           Main.hs
 

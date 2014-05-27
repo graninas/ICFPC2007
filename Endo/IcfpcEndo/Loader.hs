@@ -1,14 +1,16 @@
 module IcfpcEndo.Loader where
 
-import Middleware.Config.Scheme
+import IcfpcEndo.Endo (mkEndo)
+import Application.Assets.ConfigScheme
 import Middleware.Config.Facade
 
-import IcfpcEndo.Endo (mkEndo)
+import Paths_Endo as P
 import Data.ByteString.Char8 as X
 
 endoDnaInfo = strOption endoDna
 
-loadEndo cfg = do
+load cfg = do
     dnaFile <- extract cfg endoDnaInfo
-    dna <- X.readFile dnaFile
+    dnaRealFileName <- P.getDataFileName dnaFile
+    dna <- X.readFile dnaRealFileName
     return $ mkEndo dna 0
